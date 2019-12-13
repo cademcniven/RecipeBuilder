@@ -1,0 +1,65 @@
+#container {
+    display: grid;
+    grid-gap: 3px;
+    grid-template-columns: repeat(12, 1f);
+    grid-template-rows: repeat(12, 1f);
+}
+
+#nutrition {
+    grid-area: 1 / 1 / 12 /4;
+}
+
+#nutritionInfo {
+    display: inline-block;
+    border: 1px solid #637081;
+}
+
+#nutritionInfo table {
+    border-collapse: collapse;
+}
+
+#nutritionInfo th {
+    text-align: left;
+    border-top: solid 1px #637081;
+}
+
+#nutritionInfo td {
+    text-align: right;
+    border-top: solid 1px #637081;
+}
+
+#nutritionInfo .blank-cell {
+    width: 2rem;
+}
+
+#nutritionInfo .thick-row td {
+    border-top-width: 5px;
+}
+
+#nutritionInfo thead th {
+    border-top-width: 10px;
+}
+
+#nutritionInfo h2 {
+    font-weight: 700;
+}
+
+#search {
+    grid-area: 1 / 4 / 2 / 13;
+}
+
+#ingredients {
+    grid-area: 2 / 4 / 3 / 13;
+}
+
+#instructions {
+    grid-area: 3 / 4 / 12 / 13;
+}
+
+#tags {
+    grid-area: 12 / 1 / 13 / 11;
+}
+
+#save {
+    grid-area: 12 / 11 / 13 / 13;
+}
