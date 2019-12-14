@@ -6,7 +6,7 @@
 }
 
 #nutrition {
-    grid-area: 1 / 1 / 12 /4;
+    grid-area: 11 / 1 / 13 / 13;
 }
 
 #nutritionInfo {
@@ -45,21 +45,54 @@
 }
 
 #search {
-    grid-area: 1 / 4 / 2 / 13;
+    grid-area: 1 / 1 / 3 / 13;
 }
 
 #ingredients {
-    grid-area: 2 / 4 / 3 / 13;
+    grid-area: 3 / 1 / 5 / 13;
 }
 
 #instructions {
-    grid-area: 3 / 4 / 12 / 13;
+    grid-area: 5 / 1 / 7 / 13;
 }
 
 #tags {
-    grid-area: 12 / 1 / 13 / 11;
+    grid-area: 7 / 1 / 9 / 11;
 }
 
 #save {
-    grid-area: 12 / 11 / 13 / 13;
+    grid-area: 7 / 11 / 9 / 13;
+    text-align: right;
+}
+
+#ingredientSearch {
+    width: 50%;
+    display: inline-block;
+}
+
+#tagSearch {
+    width: 22.5%;
+    display: inline-block;
+}
+
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+    #nutrition {
+        grid-area: 1 / 1 / 12 / 4;
+    }
+    #search {
+        grid-area: 1 / 4 / 2 / 13;
+    }
+    #ingredients {
+        grid-area: 2 / 4 / 3 / 13;
+    }
+    #instructions {
+        grid-area: 3 / 4 / 12 / 13;
+    }
+    #tags {
+        grid-area: 12 / 1 / 13 / 11;
+    }
+    #save {
+        grid-area: 12 / 11 / 13 / 13;
+    }
 }
