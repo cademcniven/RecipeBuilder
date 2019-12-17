@@ -110,6 +110,11 @@
     cursor: pointer;
 }
 
+.ingredientListButton {
+    margin-top: 1.5em;
+    margin-right: 1.5em;
+}
+
 
 /* For desktop: */
 

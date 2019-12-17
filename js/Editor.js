@@ -45,20 +45,13 @@ function SearchIngredient(event) {
 function DisplayIngredientMenu(ingredients) {
     ShowModal();
 
-    console.log(ingredients);
-
     var ingredientNames = new Set();
     ingredients.hints.forEach(ingredient => {
         if (ingredientNames.has(ingredient.food.label.toLowerCase()))
             return;
 
         ingredientNames.add(ingredient.food.label.toLowerCase());
-
-        var ul = document.getElementById("ingredientOptions");
-        var li = document.createElement('li');
-        li.appendChild(document.createTextNode(ingredient.food.label.toLowerCase()));
-        ul.appendChild(li);
-        ul.lastChild.setAttribute('data-id', ingredient.food.foodId);
+        CreateModalHTML(ingredient.food.label.toLowerCase(), ingredient.food.foodId);
     });
 }
 
@@ -68,5 +61,26 @@ function ShowModal() {
 
 function CloseModal() {
     document.getElementById('ingredientSelect').style.display = "none";
-    document.querySelectorAll("#ingredientSelect li").forEach(e => e.parentNode.removeChild(e));
+    document.querySelectorAll("#ingredientOptions div").forEach(e => e.parentNode.removeChild(e));
+}
+
+function CreateModalHTML(label, foodId) {
+    var parent = document.getElementById("ingredientOptions");
+    var newDiv = document.createElement('div');
+    var domString = `<button type="button" onclick="addIngredientToRecipe(this)" data-label="${label}" data-id="${foodId}" class="ingredientListButton">x</button> ${label}`;
+    newDiv.innerHTML = domString;
+    parent.appendChild(newDiv);
+}
+
+function addIngredientToRecipe(buttonClicked) {
+    CreateIngredientHTML(buttonClicked.dataset.label);
+    CloseModal();
+}
+
+function CreateIngredientHTML(label) {
+    var parent = document.getElementById("ingredientList");
+    var li = document.createElement('li');
+    var domString = `<li>${label}</li>`;
+    li.innerHTML = domString;
+    parent.appendChild(li);
 }
