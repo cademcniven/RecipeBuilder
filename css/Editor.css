@@ -123,6 +123,10 @@ li select {
     width: 10%;
 }
 
+#ingredientList li {
+    margin-bottom: 0.5em;
+}
+
 
 /* For desktop: */
 

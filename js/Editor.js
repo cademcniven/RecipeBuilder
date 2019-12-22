@@ -3,10 +3,18 @@ const applicationID = '2b00e4f3';
 const applicationKey = '1c03d18e74f85d034dd5b0cb91fb2473';
 
 const getUrl = (query) => `https://api.edamam.com/api/food-database/parser?ingr=${query}&app_id=${applicationID}&app_key=${applicationKey}`;
-const nutritionUrl = "https://api.edamam.com/api/food-database/nutrients";
+const postUrl = `https://api.edamam.com/api/food-database/nutrients?app_id=${applicationID}&app_key=${applicationKey}`
 const isAlphabet = (str) => /^[a-zA-Z ]+$/.test(str)
+const nutritionBody = (uri, foodId) => `{"ingredients":[{"quantity": 1,"measureURI": "${uri}","foodId": "${foodId}"}]}`
 
 var ingredientSearch;
+
+//an array of all of the nutrition objects in the recipe
+var nutritionObjects = [];
+
+//a unique identifier for each ingredient added to the recipe.
+//foodId isn't good enough, because the user could add the same ingredient multiple times
+var ingredientId = 0;
 
 window.onload = (event) => {
     ingredientSearch = document.getElementById('ingredientSearch');
@@ -76,16 +84,35 @@ function CreateModalHTML(label, foodId, units) {
 }
 
 function addIngredientToRecipe(buttonClicked) {
-    CreateIngredientHTML(buttonClicked.dataset.label, buttonClicked.dataset.units);
+    CreateIngredientHTML(buttonClicked.dataset.label, buttonClicked.dataset.units, buttonClicked.dataset.id);
     CloseModal();
-
+    addIngredientObject();
+    ingredientId++;
 }
 
-function CreateIngredientHTML(label, units) {
+function addIngredientObject() {
+    var nutritionJSON = {
+        id: ingredientId,
+        calories: 0,
+        fat: 0,
+        saturatedFat: 0,
+        transFat: 0,
+        cholesterol: 0,
+        sodium: 0,
+        carbs: 0,
+        fiber: 0,
+        sugar: 0,
+        protein: 0
+    };
+
+    nutritionObjects.push(nutritionJSON);
+}
+
+function CreateIngredientHTML(label, units, foodId) {
     var parent = document.getElementById("ingredientList");
     var li = document.createElement('li');
     var unitOptions = CreateUnitHTML(units);
-    var domString = `<li>
+    var domString = `<li data-id="${foodId}" data-ingredient="${ingredientId}">
                     Qty
                     <input type="text" class="qty" name="qty" value="0">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -100,7 +127,8 @@ function CreateIngredientHTML(label, units) {
 
 function CreateUnitHTML(units) {
     var unitObj = JSON.parse(units);
-    var select = `<select>`
+    var select = `<select onchange="OnUnitChange(this)">
+    <option disabled selected value> Select Unit </option>`
 
     unitObj.forEach(unit => {
         select += `<option value="${unit.uri}">${unit.label}</option>`;
@@ -110,3 +138,45 @@ function CreateUnitHTML(units) {
 
     return select;
 }
+
+function OnUnitChange(select) {
+    var uri = select.value;
+    var foodId = select.closest("li").dataset.id;
+
+    fetch(postUrl, {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: nutritionBody(uri, foodId)
+    }).then(response => {
+        return response.json();
+    }).then(data => {
+        UpdateIngredientNutrition(data, select.closest("li").dataset.ingredient)
+    });
+}
+
+function UpdateIngredientNutrition(nutrition, id) {
+    nutritionObjects.forEach(obj => {
+        if (obj.id == id) {
+            obj.calories = nutrition.calories;
+            obj.fat = nutrition.totalNutrients.FAT.quantity;
+        }
+
+        console.log(obj);
+    });
+}
+
+// var nutritionJSON = {
+//     id: ingredientId,
+//     calories: 0,
+//     fat: 0,
+//     saturatedFat: 0,
+//     transFat: 0,
+//     cholesterol: 0,
+//     sodium: 0,
+//     carbs: 0,
+//     fiber: 0,
+//     sugar: 0,
+//     protein: 0
+// };
