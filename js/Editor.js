@@ -1,98 +1,116 @@
 //authentication for API
-const applicationID = '2b00e4f3';
-const applicationKey = '1c03d18e74f85d034dd5b0cb91fb2473';
+const applicationID = 'af989ce9';
+const applicationKey = '5d10a89a3820ac005bb38a2d64c8eb42';
 
-const getUrl = (query) => `https://api.edamam.com/api/food-database/parser?ingr=${query}&app_id=${applicationID}&app_key=${applicationKey}`;
-const postUrl = `https://api.edamam.com/api/food-database/nutrients?app_id=${applicationID}&app_key=${applicationKey}`
-const isAlphabet = (str) => /^[a-zA-Z ]+$/.test(str)
-const nutritionBody = (uri, foodId) => `{"ingredients":[{"quantity": 1,"measureURI": "${uri}","foodId": "${foodId}"}]}`
+const getUrl = (query) => `https://api.edamam.com/api/nutrition-data?app_id=${applicationID}&app_key=${applicationKey}&ingr=${query}`;
+const isAlphanumeric = (str) => /^[a-zA-Z0-9 .]+$/.test(str)
 
-var ingredientSearch;
+const recommendedDailyNutrients = {
+    fat: 65,
+    saturatedFat: 20,
+    cholesterol: 300,
+    carbs: 300,
+    fiber: 25,
+    sodium: 2400
+}
 
-//an array of all of the nutrition objects in the recipe
-var nutritionObjects = [];
-
-//a unique identifier for each ingredient added to the recipe.
-//foodId isn't good enough, because the user could add the same ingredient multiple times
-var ingredientId = 0;
+var ingredientID = 0;
+var nutritionObjs = [];
 
 window.onload = (event) => {
-    ingredientSearch = document.getElementById('ingredientSearch');
+    const ingredientSearch = document.getElementById('ingredientSearch');
     const ingredientSearchButton = document.getElementById('ingredientSearchButton');
 
     ingredientSearchButton.addEventListener("click", SearchIngredient);
-    document.getElementsByClassName("close")[0].addEventListener("click", CloseModal);
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = (event) => {
-        if (event.target == document.getElementById("ingredientSelect")) {
-            CloseModal();
-        }
-    }
 };
 
 function SearchIngredient(event) {
     var ingredient = ingredientSearch.value;
 
     //to try to avoid xss if possible
-    if (!isAlphabet(ingredient))
+    if (!isAlphanumeric(ingredient))
         return;
 
     fetch(getUrl(ingredient.replace(" ", "%20")))
         .then(response => {
-            if (!response.ok) {
-                alert("Search Failed");
+            if (response.status != 200) {
+                alert("Ingredient not found");
                 return null;
             }
 
             return response.json()
         })
         .then(response => {
-            DisplayIngredientMenu(response);
+            if (response.calories == 0) {
+                alert("Ingredient not found (or has 0 calories)");
+                return null;
+            }
+
+            addIngredientToRecipe(response);
         });
 }
 
-function DisplayIngredientMenu(ingredients) {
-    ShowModal();
-
-    var ingredientNames = new Set();
-    ingredients.hints.forEach(ingredient => {
-        if (ingredientNames.has(ingredient.food.label.toLowerCase()))
-            return;
-
-        ingredientNames.add(ingredient.food.label.toLowerCase());
-        CreateModalHTML(ingredient.food.label.toLowerCase(), ingredient.food.foodId, JSON.stringify(ingredient.measures));
-    });
+function addIngredientToRecipe(nutrition) {
+    CreateIngredientHTML();
+    nutritionObjs.push(CreateNutritionObject(nutrition));
+    UpdateHTML(TotalNutrients());
+    ingredientID++;
 }
 
-function ShowModal() {
-    document.getElementById("ingredientSelect").style.display = "block";
+function CreateIngredientHTML() {
+    var parent = document.getElementById("ingredientList");
+    var li = document.createElement('li');
+    var domString = `<li data-ingredient="${ingredientID}">
+                    ${ingredientSearch.value}
+                    </li>`;
+    li.innerHTML = domString;
+    parent.appendChild(li);
 }
 
-function CloseModal() {
-    document.getElementById('ingredientSelect').style.display = "none";
-    document.querySelectorAll("#ingredientOptions div").forEach(e => e.parentNode.removeChild(e));
+/*
+Rather than returning 0, the api simply won't return nutrients
+that don't exist in the ingredient. Therefore, rather than doing a quick
+assignment, we have to check if each field is defined first
+*/
+function CreateNutritionObject(nutrition) {
+    var nutritionObj = {
+        id: ingredientID,
+        calories: nutrition.calories,
+        fat: 0,
+        saturatedFat: 0,
+        transFat: 0,
+        cholesterol: 0,
+        sodium: 0,
+        carbs: 0,
+        fiber: 0,
+        sugar: 0,
+        protein: 0
+    }
+
+    if (typeof nutrition.totalNutrients.FAT !== "undefined")
+        nutritionObj.fat = nutrition.totalNutrients.FAT.quantity;
+    if (typeof nutrition.totalNutrients.FASAT !== "undefined")
+        nutritionObj.saturatedFat = nutrition.totalNutrients.FASAT.quantity;
+    if (typeof nutrition.totalNutrients.FATRN !== "undefined")
+        nutritionObj.transFat = nutrition.totalNutrients.FATRN.quantity;
+    if (typeof nutrition.totalNutrients.CHOLE !== "undefined")
+        nutritionObj.cholesterol = nutrition.totalNutrients.CHOLE.quantity;
+    if (typeof nutrition.totalNutrients.NA !== "undefined")
+        nutritionObj.sodium = nutrition.totalNutrients.NA.quantity;
+    if (typeof nutrition.totalNutrients.CHOCDF !== "undefined")
+        nutritionObj.carbs = nutrition.totalNutrients.CHOCDF.quantity;
+    if (typeof nutrition.totalNutrients.FIBTG !== "undefined")
+        nutritionObj.fiber = nutrition.totalNutrients.FIBTG.quantity;
+    if (typeof nutrition.totalNutrients.SUGAR !== "undefined")
+        nutritionObj.sugar = nutrition.totalNutrients.SUGAR.quantity;
+    if (typeof nutrition.totalNutrients.PROCNT !== "undefined")
+        nutritionObj.protein = nutrition.totalNutrients.PROCNT.quantity;
+
+    return nutritionObj;
 }
 
-function CreateModalHTML(label, foodId, units) {
-    var parent = document.getElementById("ingredientOptions");
-    var newDiv = document.createElement('div');
-    var domString = `<button type="button" onclick="addIngredientToRecipe(this)" data-label="${label}" data-id="${foodId}" 
-                        data-units=${units} class="ingredientListButton">x</button> ${label}`;
-    newDiv.innerHTML = domString;
-    parent.appendChild(newDiv);
-}
-
-function addIngredientToRecipe(buttonClicked) {
-    CreateIngredientHTML(buttonClicked.dataset.label, buttonClicked.dataset.units, buttonClicked.dataset.id);
-    CloseModal();
-    addIngredientObject();
-    ingredientId++;
-}
-
-function addIngredientObject() {
-    var nutritionJSON = {
-        id: ingredientId,
+function TotalNutrients() {
+    var nutritionObj = {
         calories: 0,
         fat: 0,
         saturatedFat: 0,
@@ -103,80 +121,47 @@ function addIngredientObject() {
         fiber: 0,
         sugar: 0,
         protein: 0
-    };
+    }
 
-    nutritionObjects.push(nutritionJSON);
-}
-
-function CreateIngredientHTML(label, units, foodId) {
-    var parent = document.getElementById("ingredientList");
-    var li = document.createElement('li');
-    var unitOptions = CreateUnitHTML(units);
-    var domString = `<li data-id="${foodId}" data-ingredient="${ingredientId}">
-                    Qty
-                    <input type="text" class="qty" name="qty" value="0">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    Unit
-                    ${unitOptions}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    ${label} 
-                    </li>`;
-    li.innerHTML = domString;
-    parent.appendChild(li);
-}
-
-function CreateUnitHTML(units) {
-    var unitObj = JSON.parse(units);
-    var select = `<select onchange="OnUnitChange(this)">
-    <option disabled selected value> Select Unit </option>`
-
-    unitObj.forEach(unit => {
-        select += `<option value="${unit.uri}">${unit.label}</option>`;
+    nutritionObjs.forEach(obj => {
+        nutritionObj.calories += obj.calories;
+        nutritionObj.fat += obj.fat;
+        nutritionObj.saturatedFat += obj.saturatedFat;
+        nutritionObj.transFat += obj.transFat;
+        nutritionObj.cholesterol += obj.cholesterol;
+        nutritionObj.sodium += obj.sodium;
+        nutritionObj.carbs += obj.carbs;
+        nutritionObj.fiber += obj.fiber;
+        nutritionObj.sugar += obj.sugar;
+        nutritionObj.protein += obj.protein;
     });
 
-    select += `</select>`
-
-    return select;
+    return nutritionObj;
 }
 
-function OnUnitChange(select) {
-    var uri = select.value;
-    var foodId = select.closest("li").dataset.id;
-
-    fetch(postUrl, {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: nutritionBody(uri, foodId)
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        UpdateIngredientNutrition(data, select.closest("li").dataset.ingredient)
-    });
+function UpdateHTML(nutrition) {
+    UpdateNutritionHTML(nutrition);
+    UpdateNutritionPercentHTML(nutrition);
 }
 
-function UpdateIngredientNutrition(nutrition, id) {
-    nutritionObjects.forEach(obj => {
-        if (obj.id == id) {
-            obj.calories = nutrition.calories;
-            obj.fat = nutrition.totalNutrients.FAT.quantity;
-        }
-
-        console.log(obj);
-    });
+function UpdateNutritionHTML(nutrition) {
+    document.getElementById('calories').innerHTML = Math.floor(nutrition.calories);
+    document.getElementById('fat').innerHTML = Math.floor(nutrition.fat);
+    document.getElementById('saturatedFat').innerHTML = Math.floor(nutrition.saturatedFat);
+    document.getElementById('transFat').innerHTML = Math.floor(nutrition.transFat);
+    document.getElementById('cholesterol').innerHTML = Math.floor(nutrition.cholesterol);
+    document.getElementById('sodium').innerHTML = Math.floor(nutrition.sodium);
+    document.getElementById('carbs').innerHTML = Math.floor(nutrition.carbs);
+    document.getElementById('fiber').innerHTML = Math.floor(nutrition.fiber);
+    document.getElementById('sugar').innerHTML = Math.floor(nutrition.sugar);
+    document.getElementById('protein').innerHTML = Math.floor(nutrition.protein);
 }
 
-// var nutritionJSON = {
-//     id: ingredientId,
-//     calories: 0,
-//     fat: 0,
-//     saturatedFat: 0,
-//     transFat: 0,
-//     cholesterol: 0,
-//     sodium: 0,
-//     carbs: 0,
-//     fiber: 0,
-//     sugar: 0,
-//     protein: 0
-// };
+function UpdateNutritionPercentHTML(nutrition) {
+    document.getElementById('fatPercent').innerHTML = Math.floor((nutrition.fat / recommendedDailyNutrients.fat) * 100);
+    document.getElementById('saturatedFatPercent').innerHTML = Math.floor((nutrition.saturatedFat / recommendedDailyNutrients.saturatedFat) * 100);
+    document.getElementById('cholesterolPercent').innerHTML = Math.floor((nutrition.cholesterol / recommendedDailyNutrients.cholesterol) * 100);
+    document.getElementById('carbsPercent').innerHTML = Math.floor((nutrition.carbs / recommendedDailyNutrients.carbs) * 100);
+    document.getElementById('fiberPercent').innerHTML = Math.floor((nutrition.fiber / recommendedDailyNutrients.fiber) * 100);
+    document.getElementById('sodiumPercent').innerHTML = Math.floor((nutrition.sodium / recommendedDailyNutrients.sodium) * 100);
+}
