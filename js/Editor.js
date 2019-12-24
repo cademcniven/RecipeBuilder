@@ -61,10 +61,23 @@ function CreateIngredientHTML() {
     var parent = document.getElementById("ingredientList");
     var li = document.createElement('li');
     var domString = `<li data-ingredient="${ingredientID}">
-                    ${ingredientSearch.value}
+                    ${ingredientSearch.value} <button type="buton" onclick="DeleteIngredient(this)">X</button>
                     </li>`;
     li.innerHTML = domString;
     parent.appendChild(li);
+}
+
+function DeleteIngredient(buttonClicked) {
+    for (let i = 0; i < nutritionObjs.length; ++i) {
+        if (nutritionObjs[i].id == buttonClicked.closest('li').dataset.ingredient) {
+            nutritionObjs.splice(i, 1);
+            break;
+        }
+    }
+
+    buttonClicked.closest('li').remove();
+
+    UpdateHTML(TotalNutrients());
 }
 
 /*

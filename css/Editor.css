@@ -127,6 +127,14 @@ li select {
     margin-bottom: 0.5em;
 }
 
+#ingredientList li button {
+    padding: 0 1em;
+    height: 2em;
+    line-height: 2em;
+    background-color: #ee6352;
+    border-color: #ee6352;
+}
+
 
 /* For desktop: */
 
