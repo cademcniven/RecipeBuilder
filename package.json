@@ -1,0 +1,25 @@
+{
+    "name": "recipebuilder",
+    "version": "1.0.0",
+    "description": "Senior Project",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cademcniven/RecipeBuilder.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/cademcniven/RecipeBuilder/issues"
+    },
+    "homepage": "https://github.com/cademcniven/RecipeBuilder#readme",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-promise-router": "^3.0.3",
+        "pg": "^7.15.1"
+    }
+}
