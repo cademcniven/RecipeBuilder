@@ -20,21 +20,45 @@ var nutritionObjs = [];
 window.onload = (event) => {
     const ingredientSearch = document.getElementById('ingredientSearch');
     const ingredientSearchButton = document.getElementById('ingredientSearchButton');
+    const saveRecipeButton = document.getElementById('saveRecipe');
+    const modal = document.getElementById("modal");
+    const span = document.getElementsByClassName("close")[0];
+    const submitRecipeButton = document.getElementById('submitRecipe');
 
     ingredientSearchButton.addEventListener("click", SearchIngredient);
-
-    test();
+    saveRecipeButton.addEventListener("click", OpenModal);
+    span.addEventListener("click", CloseModal);
+    submitRecipeButton.addEventListener("click", SaveRecipe);
 };
 
-async function test() {
-    fetch("http://localhost:3000/users/2").then(response =>
-        response.json().then(data => ({
-            data: data,
-            status: response.status
-        })).then(res => {
-            console.log(res.status, res.data)
-        }));
+function OpenModal() {
+    HideNotValidName();
+    modal.style.display = "block";
 }
+
+function HideNotValidName() {
+    document.getElementById('notValidName').style.display = "none";
+}
+
+function CloseModal() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// async function test() {
+//     fetch("http://localhost:3000/users/2").then(response =>
+//         response.json().then(data => ({
+//             data: data,
+//             status: response.status
+//         })).then(res => {
+//             console.log(res.status, res.data)
+//         }));
+// }
 
 function SearchIngredient(event) {
     var ingredient = ingredientSearch.value;
@@ -72,10 +96,8 @@ function addIngredientToRecipe(nutrition) {
 function CreateIngredientHTML() {
     var parent = document.getElementById("ingredientList");
     var li = document.createElement('li');
-    var domString = `<li data-ingredient="${ingredientID}">
-                    ${ingredientSearch.value} <button type="buton" onclick="DeleteIngredient(this)">X</button>
-                    </li>`;
-    li.innerHTML = domString;
+    li.setAttribute('data-ingredient', ingredientID);
+    li.innerHTML = `${ingredientSearch.value} <button type="buton" onclick="DeleteIngredient(this)">X</button>`;
     parent.appendChild(li);
 }
 
@@ -189,4 +211,78 @@ function UpdateNutritionPercentHTML(nutrition) {
     document.getElementById('carbsPercent').innerHTML = Math.floor((nutrition.carbs / recommendedDailyNutrients.carbs) * 100);
     document.getElementById('fiberPercent').innerHTML = Math.floor((nutrition.fiber / recommendedDailyNutrients.fiber) * 100);
     document.getElementById('sodiumPercent').innerHTML = Math.floor((nutrition.sodium / recommendedDailyNutrients.sodium) * 100);
+}
+
+function SaveRecipe() {
+    if (!ValidRecipeName()) {
+        DisplayNotValidName();
+        return;
+    }
+
+    PostRecipe();
+}
+
+function DisplayNotValidName() {
+    document.getElementById('notValidName').style.display = "block";
+}
+
+function ValidRecipeName() {
+    let name = GetRecipeName();
+
+    if (!isAlphanumeric(name) || name.length == 0)
+        return false;
+
+    return true;
+}
+
+function GetRecipeName() {
+    return document.getElementById('recipeName').value;
+}
+
+function PostRecipe() {
+    console.log(JSON.stringify(GetRecipeJSON()))
+    fetch('http://localhost:3000/recipes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(GetRecipeJSON())
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log(data);
+    });
+}
+
+function GetRecipeJSON() {
+    return {
+        name: GetRecipeName(),
+        ingredients: GetIngredientList(),
+        nutrition: nutritionObjs,
+        instructions: document.getElementById('recipeInstructions').value,
+        tags: GetTags()
+    }
+}
+
+function GetIngredientList() {
+    let listItems = document.querySelectorAll('#ingredientList li');
+    let ingredients = [];
+    listItems.forEach(li => {
+        ingredients.push({ id: li.dataset.ingredient, name: li.innerText.slice(0, -2) });
+    });
+
+    return ingredients;
+}
+
+function GetTags() {
+    //create an array of tags based on commas
+    let tags = document.getElementById('tagSearch').value.split(",");
+
+    //remove surrounding whitespace that may exist around the tags
+    let formattedTags = [];
+    tags.forEach(tag => {
+        formattedTags.push(tag.trim());
+    })
+
+    return formattedTags;
 }

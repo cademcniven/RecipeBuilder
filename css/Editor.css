@@ -96,6 +96,10 @@
     width: 80%;
 }
 
+.modal input {
+    width: 30%;
+}
+
 .close {
     color: #aaa;
     float: right;
@@ -133,6 +137,11 @@ li select {
     line-height: 2em;
     background-color: #ee6352;
     border-color: #ee6352;
+}
+
+#notValidName {
+    color: #ee6352;
+    display: none;
 }
 
 

@@ -128,7 +128,7 @@
             </div>
             <div id="search">
                 <label for="ingredientSearch">Ingredients </label>
-                <input id="ingredientSearch" name="ingredientSearch" type="text" placeholder="Try 'Banana' or 'Chicken Breast'">
+                <input id="ingredientSearch" name="ingredientSearch" type="text" placeholder="Try '1 cup oatmeal' or '2lb chicken breast'">
                 <button type="button" id="ingredientSearchButton">Search</button>
             </div>
             <div id="ingredients">
@@ -140,17 +140,21 @@
             </div>
             <div id="tags">
                 <label for="tagSearch">Tags </label>
-                <input id="tagSearch" name="tagSearch" type="text" placeholder="Italian">
+                <input id="tagSearch" name="tagSearch" type="text" placeholder="Italian, Low Fat">
             </div>
             <div id="save">
-                <button type="button">Save Recipe</button>
+                <button type="button" id="saveRecipe">Save Recipe</button>
             </div>
         </div>
 
-        <div id="ingredientSelect" class="modal">
+        <div id="modal" class="modal">
             <div class="modal-content">
+                <h2>Save Recipe</h2>
+                <div id="notValidName">Please enter a valid name</div>
+                <label for="recipeName">Recipe Name</label>
+                <input type="text" id="recipeName" name="recipeName">
+                <button type="button" id="submitRecipe">Save</button>
                 <span class="close">&times;</span>
-                <div id="ingredientOptions"></div>
             </div>
 
         </div>
