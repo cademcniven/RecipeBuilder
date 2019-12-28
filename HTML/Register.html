@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register</title>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="PageTemplate.css">
+    <link rel="stylesheet" href="Login.css">
+</head>
+
+<body>
+    <header>
+        <h1>Untitled Recipe Builder</h1>
+    </header>
+    <main>
+        <div id="login-form">
+            <h2>Register</h2>
+            <form target="_self" action="http://localhost:3000/users" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password2" placeholder="Confirm Password" required>
+                <input type="submit">
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

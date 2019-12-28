@@ -185,3 +185,8 @@ textarea {
     max-height: 100%;
     resize: none;
 }
+
+header span {
+    float: right;
+    display: inline;
+}
