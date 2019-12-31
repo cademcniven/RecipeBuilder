@@ -1,0 +1,27 @@
+#container {
+    width: 30%;
+    margin: 0.3em;
+}
+
+#searchButton {
+    margin: 0.3em;
+}
+
+ul {
+    list-style: none;
+    margin: 0 auto;
+    text-align: center;
+}
+
+ul li::before {
+    content: "\200B";
+}
+
+li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 3em;
+    padding: 0.3em;
+    border: 0.1rem solid #d1d1d1;
+    border-radius: .4rem;
+}

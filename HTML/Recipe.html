@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="normalize.css">
     <link rel="stylesheet" href="PageTemplate.css">
     <link rel="stylesheet" href="Editor.css">
-    <script src="Editor.js"></script>
+    <link rel="stylesheet" href="Recipe.css">
+    <script src="Recipe.js"></script>
 </head>
 
 <body>
@@ -19,6 +20,7 @@
         <span id="login"><a href="Login.html">Login/Register</a></span>
     </header>
     <main>
+        <h2 id="recipeName"></h2>
         <div id="container">
             <div id="nutrition">
                 <div id="nutritionInfo">
@@ -128,37 +130,13 @@
                     </table>
                 </div>
             </div>
-            <div id="search">
-                <label for="ingredientSearch">Ingredients </label>
-                <input id="ingredientSearch" name="ingredientSearch" type="text" placeholder="Try '1 cup oatmeal' or '2lb chicken breast'">
-                <button type="button" id="ingredientSearchButton">Search</button>
-            </div>
             <div id="ingredients">
                 <ul id="ingredientList">
                 </ul>
             </div>
             <div id="instructions">
-                <textarea id="recipeInstructions" rows="16" placeholder="Preheat the oven to 450 degrees..."></textarea>
+                <p id="recipeInstructions"></p>
             </div>
-            <div id="tags">
-                <label for="tagSearch">Tags </label>
-                <input id="tagSearch" name="tagSearch" type="text" placeholder="Italian, Low Fat">
-            </div>
-            <div id="save">
-                <button type="button" id="saveRecipe">Save Recipe</button>
-            </div>
-        </div>
-
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <h2>Save Recipe</h2>
-                <div id="notValidName">Please enter a valid name</div>
-                <label for="recipeName">Recipe Name</label>
-                <input type="text" id="recipeName" name="recipeName">
-                <button type="button" id="submitRecipe">Save</button>
-                <span class="close">&times;</span>
-            </div>
-
         </div>
     </main>
     <footer>

@@ -50,16 +50,6 @@ window.onclick = function(event) {
     }
 }
 
-// async function test() {
-//     fetch("http://localhost:3000/users/2").then(response =>
-//         response.json().then(data => ({
-//             data: data,
-//             status: response.status
-//         })).then(res => {
-//             console.log(res.status, res.data)
-//         }));
-// }
-
 function SearchIngredient(event) {
     var ingredient = ingredientSearch.value;
 

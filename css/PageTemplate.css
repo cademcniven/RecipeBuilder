@@ -186,7 +186,7 @@ textarea {
     resize: none;
 }
 
-header span {
-    float: right;
+header span#login {
     display: inline;
+    float: right;
 }

@@ -34,7 +34,6 @@ router.post('/', async(req, res) => {
 })
 
 router.post('/auth', async(request, response) => {
-    //console.log(request.session.username);
     var username = request.body.username;
     var password = request.body.password;
     if (username && password) {

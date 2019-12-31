@@ -7,10 +7,32 @@ const router = new Router()
     // export our router to be mounted by the parent application
 module.exports = router
 
+router.get('/:search', async(req, res) => {
+    console.log("in recipe get");
+    const { search } = req.params
+    console.log(search);
+    const { rows } = await db.query("SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE recipe ->> 'name' ILIKE '%' || $1 || '%';", [search]);
+    res.send(rows)
+})
+
+router.get('/id/:search', async(req, res) => {
+    console.log("in recipe get");
+    const { search } = req.params
+    console.log(search);
+    const { rows } = await db.query("SELECT recipe FROM recipes WHERE id = $1", [search]);
+    res.send(rows)
+})
+
+router.get('/', async(req, res) => {
+    console.log("in recipe get");
+    const { rows } = await db.query("SELECT id, creator, recipe -> 'name' AS name FROM recipes");
+    res.send(rows)
+})
+
 router.post('/', async(req, res) => {
     console.log("in recipe post");
-    var json = req.body;
-    var user = req.session.username;
+    const json = req.body;
+    const user = req.session.username;
 
     try {
         const { rows } = await db.query("INSERT INTO recipes (creator, recipe) VALUES ($1, $2)", [user, json]);
