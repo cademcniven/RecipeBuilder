@@ -29,7 +29,17 @@ function onSearchButtonClick() {
     GetRecipes();
 }
 
+function onEnterPress(event) {
+    //check if the event is the enter key or another key
+    if (event.which != 13 && event.keyCode != 13)
+        return;
+
+    GetRecipes();
+}
+
 async function GetRecipes() {
+    EmptyResultsList();
+
     fetch(`http://localhost:3000/recipes/${search.value}`).then(response =>
         response.json().then(data => ({
             data: data,
@@ -37,6 +47,10 @@ async function GetRecipes() {
         })).then(res => {
             DisplaySearchResults(res.data);
         }));
+}
+
+function EmptyResultsList() {
+    document.getElementById("searchResults").innerHTML = "";
 }
 
 function DisplaySearchResults(results) {

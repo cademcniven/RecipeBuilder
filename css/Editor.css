@@ -139,9 +139,9 @@ li select {
     border-color: #ee6352;
 }
 
-#notValidName {
+#notValid {
     color: #ee6352;
-    display: none;
+    display: block;
 }
 
 

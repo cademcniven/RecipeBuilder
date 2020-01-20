@@ -46,6 +46,7 @@ function CreateRecipeHTML(data) {
     document.getElementById("recipeName").innerText = data.name;
     document.getElementById("recipeInstructions").innerText = data.instructions;
     UpdateHTML(TotalNutrients(data.nutrition));
+    CreateIngredientList(data.ingredients);
 }
 
 function TotalNutrients(nutritionObjs) {
@@ -103,6 +104,15 @@ function UpdateNutritionPercentHTML(nutrition) {
     document.getElementById('carbsPercent').innerHTML = Math.floor((nutrition.carbs / recommendedDailyNutrients.carbs) * 100);
     document.getElementById('fiberPercent').innerHTML = Math.floor((nutrition.fiber / recommendedDailyNutrients.fiber) * 100);
     document.getElementById('sodiumPercent').innerHTML = Math.floor((nutrition.sodium / recommendedDailyNutrients.sodium) * 100);
+}
+
+function CreateIngredientList(ingredients) {
+    let ul = document.getElementById("ingredientList");
+    ingredients.forEach(ingredient => {
+        let li = document.createElement('li');
+        li.innerHTML = ingredient.name;
+        ul.appendChild(li);
+    });
 }
 
 //this is way overkill considering the url format is always the same

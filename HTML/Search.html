@@ -21,10 +21,10 @@
     <nav>
         <div id="container">
             <label for="tags">Tags</label>
-            <input type="text" id="tags" name="tags" placeholder="Low Fat, Vegan...">
+            <input type="text" id="tags" name="tags" onkeypress="onEnterPress(event)" placeholder="Low Fat, Vegan...">
             <br>
             <label for="search">Search</label>
-            <input type="text" id="search" name="search">
+            <input type="text" id="search" onkeypress="onEnterPress(event)" name="search">
         </div>
         <button type="button" id="searchButton">Search</button>
     </nav>

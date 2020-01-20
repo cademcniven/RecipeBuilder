@@ -130,7 +130,7 @@
             </div>
             <div id="search">
                 <label for="ingredientSearch">Ingredients </label>
-                <input id="ingredientSearch" name="ingredientSearch" type="text" placeholder="Try '1 cup oatmeal' or '2lb chicken breast'">
+                <input id="ingredientSearch" name="ingredientSearch" type="text" onkeypress="SearchIngredient(event)" placeholder="Try '1 cup oatmeal' or '2lb chicken breast'">
                 <button type="button" id="ingredientSearchButton">Search</button>
             </div>
             <div id="ingredients">
@@ -152,7 +152,7 @@
         <div id="modal" class="modal">
             <div class="modal-content">
                 <h2>Save Recipe</h2>
-                <div id="notValidName">Please enter a valid name</div>
+                <div id="notValid"></div>
                 <label for="recipeName">Recipe Name</label>
                 <input type="text" id="recipeName" name="recipeName">
                 <button type="button" id="submitRecipe">Save</button>
@@ -160,6 +160,7 @@
             </div>
 
         </div>
+        <div id="loading"></div>
     </main>
     <footer>
 

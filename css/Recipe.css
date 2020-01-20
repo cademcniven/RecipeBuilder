@@ -1,3 +1,56 @@
 #recipeName {
     text-align: center;
 }
+
+#nutritionInfo {
+    display: inline-block;
+    border: 1px solid #637081;
+}
+
+#nutritionInfo table {
+    border-collapse: collapse;
+}
+
+#nutritionInfo th {
+    text-align: left;
+    border-top: solid 1px #637081;
+}
+
+#nutritionInfo td {
+    text-align: right;
+    border-top: solid 1px #637081;
+}
+
+#nutritionInfo .blank-cell {
+    width: 2rem;
+}
+
+#nutritionInfo .thick-row td {
+    border-top-width: 5px;
+}
+
+#nutritionInfo thead th {
+    border-top-width: 10px;
+}
+
+#nutritionInfo h2 {
+    font-weight: 700;
+}
+
+@media only screen and (min-width: 768px) {
+    #container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        grid-gap: 3px;
+    }
+    #nutrition {
+        grid-area: 1 / 1 / 7 / 2;
+    }
+    #ingredients {
+        grid-area: 1 / 2 / 4 / 4;
+    }
+    #instructions {
+        grid-area: 4 / 2 / 7 / 4;
+    }
+}

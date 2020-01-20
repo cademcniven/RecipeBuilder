@@ -4,6 +4,7 @@ const applicationKey = '5d10a89a3820ac005bb38a2d64c8eb42';
 
 const getUrl = (query) => `https://api.edamam.com/api/nutrition-data?app_id=${applicationID}&app_key=${applicationKey}&ingr=${query}`;
 const isAlphanumeric = (str) => /^[a-zA-Z0-9 .]+$/.test(str)
+const isValidRecipeName = (str) => /^[a-zA-Z0-9 .'&!?"-]+$/.test(str)
 
 const recommendedDailyNutrients = {
     fat: 65,
@@ -57,7 +58,7 @@ function OpenModal() {
 }
 
 function HideNotValidName() {
-    document.getElementById('notValidName').style.display = "none";
+    document.getElementById('notValid').innerHTML = "";
 }
 
 function CloseModal() {
@@ -73,14 +74,23 @@ window.onclick = function(event) {
 function SearchIngredient(event) {
     var ingredient = ingredientSearch.value;
 
+    //this clause makes the function exit if the user is typing in the 
+    //search box, but it passes if they press enter or click the button
+    if (event.which != 13 && event.keyCode != 13 && event.which != 1)
+        return;
+
     //to try to avoid xss if possible
     if (!isAlphanumeric(ingredient))
         return;
+
+    //display the loading spinner
+    setVisible('#loading', true);
 
     fetch(getUrl(ingredient.replace(" ", "%20")))
         .then(response => {
             if (response.status != 200) {
                 alert("Ingredient not found");
+                setVisible('#loading', false);
                 return null;
             }
 
@@ -92,8 +102,15 @@ function SearchIngredient(event) {
                 return null;
             }
 
+            //disable the loading spinner
+            setVisible('#loading', false);
             addIngredientToRecipe(response);
         });
+}
+
+//for toggling the vision of the loading spinner
+function setVisible(selector, visible) {
+    document.querySelector(selector).style.display = visible ? 'block' : 'none';
 }
 
 function addIngredientToRecipe(nutrition) {
@@ -224,8 +241,13 @@ function UpdateNutritionPercentHTML(nutrition) {
 }
 
 function SaveRecipe() {
-    if (!ValidRecipeName()) {
+    if (!isValidRecipeName(GetRecipeName())) {
         DisplayNotValidName();
+        return;
+    }
+
+    if (!Array.isArray(nutritionObjs) || !nutritionObjs.length) {
+        document.getElementById('notValid').innerHTML = "No ingredients in recipe";
         return;
     }
 
@@ -233,16 +255,7 @@ function SaveRecipe() {
 }
 
 function DisplayNotValidName() {
-    document.getElementById('notValidName').style.display = "block";
-}
-
-function ValidRecipeName() {
-    let name = GetRecipeName();
-
-    if (!isAlphanumeric(name) || name.length == 0)
-        return false;
-
-    return true;
+    document.getElementById('notValid').innerHTML = "Please enter a valid name";
 }
 
 function GetRecipeName() {
