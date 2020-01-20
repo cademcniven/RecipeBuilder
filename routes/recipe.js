@@ -35,11 +35,13 @@ router.post('/', async(req, res) => {
     const user = req.session.username;
 
     try {
-        const { rows } = await db.query("INSERT INTO recipes (creator, recipe) VALUES ($1, $2)", [user, json]);
+        db.query("INSERT INTO recipes (creator, recipe) VALUES ($1, $2) RETURNING id", [user, json]).then(response => {
+            console.log(response.rows[0].id);
+            res.send(response.rows[0].id);
+            return;
+        });
     } catch (error) {
         console.log("failed to create recipe");
-        res.redirect('/Register.html');
+        return;
     }
-
-    res.redirect('/Editor.html');
 })

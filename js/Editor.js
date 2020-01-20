@@ -278,6 +278,7 @@ function PostRecipe() {
         return response.json();
     }).then(function(data) {
         console.log(data);
+        window.location = `/Recipe.html?id=${data}`
     });
 }
 
