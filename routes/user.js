@@ -20,11 +20,13 @@ router.post('/', async(req, res) => {
     if (password == password2) {
         try {
             const { rows } = await db.query("INSERT INTO users (username, password) VALUES ($1,$2)", [username, password]);
-            request.session.loggedin = true;
-            request.session.username = username;
+            req.session.loggedin = true;
+            req.session.username = username;
         } catch (error) {
             console.log("failed to create user");
+            console.log(error);
             res.redirect('/Register.html');
+            return;
         }
 
         res.redirect('/Editor.html');
