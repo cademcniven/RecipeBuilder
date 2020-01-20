@@ -15,6 +15,7 @@ const recommendedDailyNutrients = {
     sodium: 2400
 }
 
+var signedIn = false;
 var ingredientID = 0;
 var nutritionObjs = [];
 
@@ -38,6 +39,7 @@ function CheckLoggedIn() {
         if (response.status == 200) {
             response.json().then(data => {
                 WelcomeLoggedInUser(data.username);
+                signedIn = true;
             });
         }
     });
@@ -50,6 +52,7 @@ function WelcomeLoggedInUser(username) {
 function LogOut() {
     fetch(`http://localhost:3000/users/logout`);
     document.getElementById("login").innerHTML = `<a href="Login.html">Login/Register</a>`;
+    signedIn = false;
 }
 
 function OpenModal() {
@@ -241,8 +244,13 @@ function UpdateNutritionPercentHTML(nutrition) {
 }
 
 function SaveRecipe() {
+    if (!signedIn) {
+        document.getElementById('notValid').innerHTML = "Sign in to save your recipes";
+        return;
+    }
+
     if (!isValidRecipeName(GetRecipeName())) {
-        DisplayNotValidName();
+        document.getElementById('notValid').innerHTML = "Please enter a valid name";
         return;
     }
 
@@ -252,10 +260,6 @@ function SaveRecipe() {
     }
 
     PostRecipe();
-}
-
-function DisplayNotValidName() {
-    document.getElementById('notValid').innerHTML = "Please enter a valid name";
 }
 
 function GetRecipeName() {
