@@ -1,6 +1,7 @@
 window.onload = (event) => {
     const searchButton = document.getElementById("searchButton");
     const search = document.getElementById("search");
+    const tags = document.getElementById("tags");
 
     searchButton.addEventListener("click", onSearchButtonClick);
     CheckLoggedIn();
@@ -40,7 +41,12 @@ function onEnterPress(event) {
 async function GetRecipes() {
     EmptyResultsList();
 
-    fetch(`http://localhost:3000/recipes/${search.value}`).then(response =>
+    //if search fields are empty then the request won't go to the right route
+    //the route can check for 00's and change behaviour appropriately
+    let searchString = (search.value) ? search.value : "00";
+    let tagsString = (tags.value) ? tags.value : "00";
+
+    fetch(`http://localhost:3000/recipes/${searchString}/${tagsString}`).then(response =>
         response.json().then(data => ({
             data: data,
             status: response.status
@@ -55,7 +61,6 @@ function EmptyResultsList() {
 
 function DisplaySearchResults(results) {
     results.forEach(result => {
-        console.log(result);
         CreateResultHTML(result);
     });
 }

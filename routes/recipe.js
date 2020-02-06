@@ -7,12 +7,61 @@ const router = new Router()
     // export our router to be mounted by the parent application
 module.exports = router
 
-router.get('/:search', async(req, res) => {
-    console.log("in recipe get");
-    const { search } = req.params
-    console.log(search);
-    const { rows } = await db.query("SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE recipe ->> 'name' ILIKE '%' || $1 || '%';", [search]);
-    res.send(rows)
+// router.get('/:search', async(req, res) => {
+//     console.log("in recipe get");
+//     const { search } = req.params
+//     console.log(search);
+//     const { rows } = await db.query(`SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE recipe ->> 'name' ILIKE '%' || $1 || '%';`, [search]);
+//     res.send(rows)
+// })
+
+router.get('/:search/:tags', async(req, res) => {
+    var search = req.params.search;
+    var tags = req.params.tags;
+
+    //if both search fields were empty, return all recipes
+    if (search == "00" && tags == "00") {
+        const { rows } = await db.query("SELECT id, creator, recipe -> 'name' AS name FROM recipes");
+        res.send(rows);
+        return;
+    }
+
+    //if the search field isn't empty, query with constraints
+    if (search != "00") {
+        let list = [];
+        list.push(search);
+
+        if (tags != "00")
+            list = list.concat(tags.split(","));
+
+        let queryString = `SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE recipe ->> 'name' ILIKE '%' || '${list[0]}' || '%'`;
+
+        for (let i = 1; i < list.length; i++) {
+            queryString += ` AND (recipe->'tags')::jsonb ? '${list[i]}'`
+        }
+
+        queryString += ';';
+
+        const { rows } = await db.query(queryString);
+        res.send(rows);
+        return;
+    }
+
+    //final case is when the search field is empty but the tags field is not
+    let list = [];
+    list.push(tags.split(","));
+
+    let queryString = `SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE (recipe->'tags')::jsonb ? '${list[0]}'`;
+
+    for (let i = 1; i < list.length; i++) {
+        queryString += ` AND (recipe->'tags')::jsonb ? '${list[i]}'`
+    }
+
+    queryString += ';';
+
+    const { rows } = await db.query(queryString);
+    res.send(rows);
+    return;
 })
 
 router.get('/id/:search', async(req, res) => {
