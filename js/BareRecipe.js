@@ -9,27 +9,7 @@ const recommendedDailyNutrients = {
 
 window.onload = (event) => {
     GetRecipeJSON();
-    CheckLoggedIn();
 };
-
-function CheckLoggedIn() {
-    fetch(`http://localhost:3000/users/loggedin`).then(response => {
-        if (response.status == 200) {
-            response.json().then(data => {
-                WelcomeLoggedInUser(data.username);
-            });
-        }
-    });
-}
-
-function WelcomeLoggedInUser(username) {
-    document.getElementById("login").innerHTML = `Logged in as: <em>${username}</em> &nbsp;&nbsp; <a onclick="LogOut()">log out</a>`;
-}
-
-function LogOut() {
-    fetch(`http://localhost:3000/users/logout`);
-    document.getElementById("login").innerHTML = `<a href="Login.html">Login/Register</a>`;
-}
 
 function GetRecipeJSON() {
     fetch(`http://localhost:3000/recipes/id/${GetRecipeID()}`).then(response =>
@@ -185,8 +165,4 @@ function GetRecipeID() {
     }
 
     return obj.id;
-}
-
-function RedirectToBareRecipe() {
-    window.location = `BareRecipe.html?id=${GetRecipeID()}`;
 }

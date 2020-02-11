@@ -1,0 +1,34 @@
+#nutritionInfo {
+    display: inline-block;
+    border: 1px solid black;
+}
+
+#nutritionInfo table {
+    border-collapse: collapse;
+}
+
+#nutritionInfo th {
+    text-align: left;
+    border-top: solid 1px black;
+}
+
+#nutritionInfo td {
+    text-align: right;
+    border-top: solid 1px black;
+}
+
+#nutritionInfo .blank-cell {
+    width: 2rem;
+}
+
+#nutritionInfo .thick-row td {
+    border-top-width: 5px;
+}
+
+#nutritionInfo thead th {
+    border-top-width: 10px;
+}
+
+#nutritionInfo h2 {
+    font-weight: 700;
+}
