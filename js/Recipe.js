@@ -42,7 +42,6 @@ function GetRecipeJSON() {
 }
 
 function CreateRecipeHTML(data) {
-    console.log(data);
     document.getElementById("recipeName").innerText = data.name;
     document.getElementById("recipeInstructions").innerText = data.instructions;
     UpdateHTML(TotalNutrients(data.nutrition));

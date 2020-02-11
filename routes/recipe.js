@@ -7,15 +7,8 @@ const router = new Router()
     // export our router to be mounted by the parent application
 module.exports = router
 
-// router.get('/:search', async(req, res) => {
-//     console.log("in recipe get");
-//     const { search } = req.params
-//     console.log(search);
-//     const { rows } = await db.query(`SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE recipe ->> 'name' ILIKE '%' || $1 || '%';`, [search]);
-//     res.send(rows)
-// })
-
-router.get('/:search/:tags', async(req, res) => {
+router.get('/search/:search/:tags', async(req, res) => {
+    console.log("in search for recipes")
     var search = req.params.search;
     var tags = req.params.tags;
 

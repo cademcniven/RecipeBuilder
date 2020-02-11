@@ -46,7 +46,7 @@ async function GetRecipes() {
     let searchString = (search.value) ? search.value : "00";
     let tagsString = (tags.value) ? tags.value : "00";
 
-    fetch(`http://localhost:3000/recipes/${searchString}/${tagsString}`).then(response =>
+    fetch(`http://localhost:3000/recipes/search/${searchString}/${tagsString}`).then(response =>
         response.json().then(data => ({
             data: data,
             status: response.status
