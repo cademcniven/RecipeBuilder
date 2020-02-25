@@ -84,6 +84,14 @@ footer {
     color: white;
 }
 
+a {
+    text-decoration: underline;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
 .button,
 button,
 input[type='button'],

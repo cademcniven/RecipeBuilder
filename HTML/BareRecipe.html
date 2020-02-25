@@ -6,11 +6,16 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="BareRecipe.css">
     <script src="BareRecipe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-alpha1/html2canvas.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdn.bootcss.com/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
 </head>
 
 <body>
     <main>
         <h1 id="recipeName"></h1>
+        <a id="print" onclick='PrintRecipe()'>Click to save recipe as PDF</a>
         <div id="container">
             <div id="nutrition">
                 <div id="nutritionInfo">

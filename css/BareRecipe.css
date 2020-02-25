@@ -32,3 +32,12 @@
 #nutritionInfo h2 {
     font-weight: 700;
 }
+
+a {
+    text-decoration: underline;
+    color: blue;
+}
+
+a:hover {
+    cursor: pointer;
+}

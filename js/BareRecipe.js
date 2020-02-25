@@ -166,3 +166,32 @@ function GetRecipeID() {
 
     return obj.id;
 }
+
+function PrintRecipe() {
+    //remove the "Click to print recipe to PDF" link from the page
+    //so it's not shown in the pdf
+    RemovePrintLink();
+
+    const filename = 'ThisIsYourPDFFilename.pdf';
+    html2pdf(document.body, {
+        margin: 1,
+        filename: 'myfile.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { dpi: 192, letterRendering: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    });
+
+    //wait .1 seconds then add the link back
+    //without waiting, it's added back before the pdf can be created
+    setTimeout(AddPrintLink, 100);
+}
+
+function RemovePrintLink() {
+    let link = document.getElementById("print");
+    link.innerText = ""
+}
+
+function AddPrintLink() {
+    let link = document.getElementById("print");
+    link.innerText = "Click to save recipe as PDF"
+}
