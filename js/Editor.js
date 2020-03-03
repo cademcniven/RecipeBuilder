@@ -46,13 +46,17 @@ function CheckLoggedIn() {
 }
 
 function WelcomeLoggedInUser(username) {
-    document.getElementById("login").innerHTML = `Logged in as: <em>${username}</em> &nbsp;&nbsp; <a onclick="LogOut()">log out</a>`;
+    document.getElementById("login").innerHTML = `Logged in as: <em>${username}</em> &nbsp;&nbsp; <a onclick="LogOut()">Log Out</a> &nbsp;&nbsp; <a onclick="ViewCookbook()">View Cookbook</a>`;
 }
 
 function LogOut() {
     fetch(`http://localhost:3000/users/logout`);
     document.getElementById("login").innerHTML = `<a href="Login.html">Login/Register</a>`;
     signedIn = false;
+}
+
+function ViewCookbook() {
+    window.location = `/Cookbook.html`;
 }
 
 function OpenModal() {

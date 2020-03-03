@@ -57,6 +57,17 @@ router.get('/search/:search/:tags', async(req, res) => {
     return;
 })
 
+//get all recipes made by the logged in user
+router.get('/cookbook', async(req, res) => {
+    if (!req.session.username) {
+        console.log("not signed in")
+        return;
+    }
+
+    const { rows } = await db.query("SELECT id, creator, recipe -> 'name' AS name FROM recipes WHERE creator = $1", [req.session.username]);
+    res.send(rows)
+})
+
 router.get('/id/:search', async(req, res) => {
     console.log("in recipe get");
     const { search } = req.params

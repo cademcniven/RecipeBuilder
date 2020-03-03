@@ -1,10 +1,6 @@
 window.onload = (event) => {
-    const searchButton = document.getElementById("searchButton");
-    const search = document.getElementById("search");
-    const tags = document.getElementById("tags");
-
-    searchButton.addEventListener("click", onSearchButtonClick);
     CheckLoggedIn();
+    GetRecipes();
 };
 
 function CheckLoggedIn() {
@@ -30,42 +26,19 @@ function ViewCookbook() {
     window.location = `/Cookbook.html`;
 }
 
-function onSearchButtonClick() {
-    GetRecipes();
-}
-
-function onEnterPress(event) {
-    //check if the event is the enter key or another key
-    if (event.which != 13 && event.keyCode != 13)
-        return;
-
-    GetRecipes();
-}
-
 async function GetRecipes() {
-    EmptyResultsList();
-
-    //if search fields are empty then the request won't go to the right route
-    //the route can check for 00's and change behaviour appropriately
-    let searchString = (search.value) ? search.value : "00";
-    let tagsString = (tags.value) ? tags.value : "00";
-
-    fetch(`http://localhost:3000/recipes/search/${searchString}/${tagsString}`).then(response =>
+    fetch(`http://localhost:3000/recipes/cookbook`).then(response =>
         response.json().then(data => ({
             data: data,
             status: response.status
         })).then(res => {
-            DisplaySearchResults(res.data);
+            DisplayRecipes(res.data);
         }));
 }
 
-function EmptyResultsList() {
-    document.getElementById("searchResults").innerHTML = "";
-}
-
-function DisplaySearchResults(results) {
-    results.forEach(result => {
-        CreateResultHTML(result);
+function DisplayRecipes(recipes) {
+    recipes.forEach(recipe => {
+        CreateResultHTML(recipe);
     });
 }
 
