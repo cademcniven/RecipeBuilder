@@ -72,7 +72,7 @@ router.get('/id/:search', async(req, res) => {
     console.log("in recipe get");
     const { search } = req.params
     console.log(search);
-    const { rows } = await db.query("SELECT recipe FROM recipes WHERE id = $1", [search]);
+    const { rows } = await db.query("SELECT creator, recipe FROM recipes WHERE id = $1", [search]);
     res.send(rows)
 })
 

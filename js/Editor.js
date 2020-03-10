@@ -106,6 +106,7 @@ function SearchIngredient(event) {
         .then(response => {
             if (response.calories == 0) {
                 alert("Ingredient not found (or has 0 calories)");
+                setVisible('#loading', false);
                 return null;
             }
 

@@ -7,22 +7,45 @@ const recommendedDailyNutrients = {
     sodium: 2400
 }
 
+var username;
+var recipeJSON;
+
 window.onload = (event) => {
-    GetRecipeJSON();
     CheckLoggedIn();
+    GetRecipeJSON();
+
+    document.getElementById('addRecipeToCookbook').addEventListener("click", AddRecipeToCookbook);
 };
+
+function AddRecipeToCookbook() {
+    fetch('http://localhost:3000/recipes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(recipeJSON)
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log(data);
+        window.location = `/Recipe.html?id=${data}`
+    });
+}
 
 function CheckLoggedIn() {
     fetch(`http://localhost:3000/users/loggedin`).then(response => {
         if (response.status == 200) {
             response.json().then(data => {
-                WelcomeLoggedInUser(data.username);
+                username = data.username;
+                WelcomeLoggedInUser();
             });
+        } else {
+            document.getElementById('addRecipeToCookbook').style.display = "none"
         }
     });
 }
 
-function WelcomeLoggedInUser(username) {
+function WelcomeLoggedInUser() {
     document.getElementById("login").innerHTML = `Logged in as: <em>${username}</em> &nbsp;&nbsp; <a onclick="LogOut()">log out</a> &nbsp;&nbsp; <a onclick="ViewCookbook()">View Cookbook</a>`;
 }
 
@@ -45,6 +68,14 @@ function GetRecipeJSON() {
                 document.getElementById("recipeName").innerText = "Could not load recipe";
             else
                 CreateRecipeHTML(res.data[0].recipe);
+
+
+            console.log(res.data[0].creator)
+            console.log(username)
+            if (res.data[0].creator == username)
+                document.getElementById('addRecipeToCookbook').style.display = "none"
+            else
+                recipeJSON = res.data[0].recipe
         }));
 }
 
